@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PhishBusters - Advanced Phishing Detection</title>
+    <link rel="stylesheet" href="styles (1).css">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Header & Navigation -->
+    <header>
+        <div class="container">
+            <div class="logo">
+                <i class="fas fa-shield-alt"></i>
+                <span>PhishBusters</span>
+            </div>
+            <nav>
+                <ul class="nav-links">
+                    <li><a href="#home" class="active">Home</a></li>
+                    <li><a href="#scan">URL Scanner</a></li>
+                    <li><a href="#email-scan">Email Scanner</a></li>
+                    <li><a href="#blog">Blog</a></li>
+                    <li><a href="#report">Report</a></li>
+                </ul>
+            </nav>
+            <div class="auth-buttons">
+                <button class="btn btn-outline" id="login-btn">Login</button>
+                <button class="btn btn-primary" id="signup-btn">Sign Up</button>
+            </div>
+            <div class="mobile-menu-btn">
+                <i class="fas fa-bars"></i>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+        <!-- Home Section -->
+        <section id="home" class="section active">
+            <!-- Hero Section -->
+            <div class="hero">
+                <div class="container">
+                    <div class="hero-content">
+                        <div class="badge">AI-Powered Protection</div>
+                        <h1>Defend Against Phishing Attacks</h1>
+                        <p>Our advanced AI tools help you identify malicious URLs and suspicious emails to keep you safe online. Scan any link or analyze email content for instant threat detection.</p>
+                        <div class="hero-buttons">
+                            <button class="btn btn-primary btn-lg" onclick="showSection('scan')">
+                                Scan URL <i class="fas fa-arrow-right"></i>
+                            </button>
+                            <button class="btn btn-secondary btn-lg" onclick="showSection('email-scan')">
+                                Analyze Email <i class="fas fa-envelope"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="hero-image">
+                        <div class="security-graphic">
+                            <div class="shield-container">
+                                <i class="fas fa-shield-alt"></i>
+                                <div class="pulse"></div>
+                            </div>
+                            <div class="security-lines">
+                                <div class="line line-1"></div>
+                                <div class="line line-2"></div>
+                                <div class="line line-3"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Features Section -->
+            <div class="features">
+                <div class="container">
+                    <div class="section-header">
+                        <div class="badge">Features</div>
+                        <h2>Comprehensive Protection</h2>
+                        <p>Our suite of security tools keeps you safe from all types of phishing threats</p>
+                    </div>
+                    <div class="features-grid">
+                        <div class="feature-card">
+                            <div class="feature-icon">
+                                <i class="fas fa-link"></i>
+                            </div>
+                            <h3>URL Analysis</h3>
+                            <p>Our AI engine scans URLs in real-time to detect phishing attempts with high accuracy</p>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon">
+                                <i class="fas fa-envelope"></i>
+                            </div>
+                            <h3>Email Scanning</h3>
+                            <p>Analyze suspicious emails to identify phishing content, malicious links, and social engineering tactics</p>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon">
+                                <i class="fas fa-database"></i>
+                            </div>
+                            <h3>Threat Database</h3>
+                            <p>Access our constantly updated database of known phishing sites and attack patterns</p>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon">
+                                <i class="fas fa-file-alt"></i>
+                            </div>
+                            <h3>Educational Resources</h3>
+                            <p>Stay informed with our blog posts about the latest phishing techniques and prevention methods</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            
+
+            <!-- Blacklisted Sites Section -->
+            <div class="blacklisted-sites">
+                <div class="container">
+                    <div class="section-header">
+                        <div class="badge">Threat Intelligence</div>
+                        <h2>Recently Blacklisted Sites</h2>
+                        <p>These websites have been reported and verified as phishing attempts</p>
+                    </div>
+                    <div class="card glass-card">
+                        <div class="blacklisted-header">
+                            <div class="blacklisted-title">
+                                <i class="fas fa-exclamation-triangle"></i>
+                                <h3>Live Threat Feed</h3>
+                            </div>
+                            <div class="blacklisted-legend">
+                                <span class="legend-item"><span class="dot financial"></span> Financial</span>
+                                <span class="legend-item"><span class="dot ecommerce"></span> E-commerce</span>
+                                <span class="legend-item"><span class="dot social"></span> Social Media</span>
+                                <span class="legend-item"><span class="dot other"></span> Other</span>
+                            </div>
+                        </div>
+                        <div class="blacklisted-container" id="blacklisted-sites-container">
+                            <!-- Blacklisted sites will be populated by JavaScript -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CTA Section -->
+            <div class="cta-section">
+                <div class="container">
+                    <div class="cta-content">
+                        <h2>Stay Protected Everywhere</h2>
+                        <p>Create an account to save your scan history and contribute to our database</p>
+                        <button class="btn btn-light btn-lg" id="cta-signup-btn">
+                            Get Started <i class="fas fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- URL Scan Section -->
+        <section id="scan" class="section">
+            <div class="container">
+                <div class="section-header">
+                    <div class="badge">URL Analysis</div>
+                    <h1>URL Scanner</h1>
+                    <p>Check if a URL is legitimate or a phishing attempt with our AI-powered scanner</p>
+                </div>
+                
+                <div class="scan-grid">
+                    <div class="card glass-card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-link"></i> Scan URL</h3>
+                            <p>Enter any suspicious URL to analyze</p>
+                        </div>
+                        <div class="card-body">
+                            <form id="scan-form" class="scan-form">
+                                <input type="url" placeholder="Enter URL to scan (e.g., https://example.com)" required>
+                                <button type="submit" class="btn btn-primary btn-block" id="scan-button">Scan URL</button>
+                            </form>
+                            <div class="scan-result" id="scan-result"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="card glass-card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-exclamation-triangle"></i> How to Identify Phishing</h3>
+                            <p>Common signs of phishing websites</p>
+                        </div>
+                        <div class="card-body">
+                            <ul class="phishing-signs">
+                                <li>
+                                    <i class="fas fa-check-circle"></i>
+                                    <div>
+                                        <strong>Suspicious URLs</strong>
+                                        <p>Look for misspellings or extra characters in domain names</p>
+                                    </div>
+                                </li>
+                                <li>
+                                    <i class="fas fa-check-circle"></i>
+                                    <div>
+                                        <strong>Poor Design</strong>
+                                        <p>Legitimate sites usually have professional design and no spelling errors</p>
+                                    </div>
+                                </li>
+                                <li>
+                                    <i class="fas fa-check-circle"></i>
+                                    <div>
+                                        <strong>Urgent Requests</strong>
+                                        <p>Be wary of sites creating urgency or threatening consequences</p>
+                                    </div>
+                                </li>
+                                <li>
+                                    <i class="fas fa-check-circle"></i>
+                                    <div>
+                                        <strong>Unsecured Connection</strong>
+                                        <p>Check for HTTPS and a padlock icon in the address bar</p>
+                                    </div>
+                                </li>
+                                <li>
+                                    <i class="fas fa-check-circle"></i>
+                                    <div>
+                                        <strong>Unusual Requests</strong>
+                                        <p>Legitimate sites won't ask for sensitive information via email</p>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Email Scan Section -->
+        <section id="email-scan" class="section">
+            <div class="container">
+                <div class="section-header">
+                    <div class="badge">Email Analysis</div>
+                    <h1>Email Scanner</h1>
+                    <p>Analyze suspicious emails to detect phishing attempts and social engineering tactics</p>
+                </div>
+                
+                <div class="scan-grid">
+                    <div class="card glass-card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-envelope"></i> Analyze Email Content</h3>
+                            <p>Paste the suspicious email content below</p>
+                        </div>
+                        <div class="card-body">
+                            <form id="email-scan-form" class="scan-form">
+                                <textarea placeholder="Paste email content here (including subject, sender, and body text)..." rows="8" required></textarea>
+                                <button type="submit" class="btn btn-primary btn-block" id="email-scan-button">Analyze Email</button>
+                            </form>
+                            <div class="scan-result" id="email-scan-result"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="card glass-card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-exclamation-triangle"></i> Email Phishing Indicators</h3>
+                            <p>Common signs of phishing emails</p>
+                        </div>
+                        <div class="card-body">
+                            <ul class="phishing-signs">
+                                <li>
+                                    <i class="fas fa-check-circle"></i>
+                                    <div>
+                                        <strong>Mismatched Sender</strong>
+                                        <p>Email address doesn't match the claimed organization</p>
+                                    </div>
+                                </li>
+                                <li>
+                                    <i class="fas fa-check-circle"></i>
+                                    <div>
+                                        <strong>Urgent Language</strong>
+                                        <p>Messages creating urgency or threatening negative consequences</p>
+                                    </div>
+                                </li>
+                                <li>
+                                    <i class="fas fa-check-circle"></i>
+                                    <div>
+                                        <strong>Suspicious Links</strong>
+                                        <p>Hover over links to see if they lead to unexpected destinations</p>
+                                    </div>
+                                </li>
+                                <li>
+                                    <i class="fas fa-check-circle"></i>
+                                    <div>
+                                        <strong>Requests for Information</strong>
+                                        <p>Legitimate organizations rarely request sensitive information via email</p>
+                                    </div>
+                                </li>
+                                <li>
+                                    <i class="fas fa-check-circle"></i>
+                                    <div>
+                                        <strong>Grammar & Spelling</strong>
+                                        <p>Professional organizations typically have proper grammar and spelling</p>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Blog Section -->
+        <section id="blog" class="section">
+            <div class="container">
+                <div class="section-header">
+                    <div class="badge">Knowledge Base</div>
+                    <h1>Security Blog</h1>
+                    <p>Stay informed about the latest phishing techniques and how to protect yourself online</p>
+                </div>
+                
+                <div class="blog-grid" id="blog-grid">
+                    <!-- Blog posts will be populated by JavaScript -->
+                </div>
+                
+                <div class="view-more">
+                    <button class="btn btn-outline">
+                        View all articles <i class="fas fa-arrow-right"></i>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Report Section -->
+        <section id="report" class="section">
+            <div class="container">
+                <div class="section-header">
+                    <div class="badge">Community Protection</div>
+                    <h1>Report Phishing Site</h1>
+                    <p>Help protect others by reporting suspicious or malicious websites</p>
+                </div>
+                
+                <div class="report-container">
+                    <div class="card glass-card" id="report-form-card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-exclamation-triangle"></i> Report a Phishing Website</h3>
+                            <p>Provide details about the suspicious website</p>
+                        </div>
+                        <div class="card-body">
+                            <form id="report-form">
+                                <div class="form-group">
+                                    <label for="phishing-url">Phishing URL <span class="required">*</span></label>
+                                    <input type="url" id="phishing-url" placeholder="https://suspicious-website.com" required>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="category">Category <span class="required">*</span></label>
+                                    <select id="category" required>
+                                        <option value="" disabled selected>Select category</option>
+                                        <option value="banking">Banking/Financial</option>
+                                        <option value="ecommerce">E-commerce</option>
+                                        <option value="social">Social Media</option>
+                                        <option value="email">Email Provider</option>
+                                        <option value="government">Government</option>
+                                        <option value="tech">Technology</option>
+                                        <option value="other">Other</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="description">Additional Details</label>
+                                    <textarea id="description" placeholder="Describe how you found this site and why you believe it's phishing..." rows="4"></textarea>
+                                </div>
+                                
+                                <button type="submit" class="btn btn-primary btn-block" id="report-button">Submit Report</button>
+                            </form>
+                        </div>
+                    </div>
+                    
+                    <div class="card success-card" id="report-success" style="display: none;">
+                        <div class="card-header">
+                            <h3 class="text-success"><i class="fas fa-check-circle"></i> Report Submitted Successfully</h3>
+                            <p>Thank you for helping to make the internet safer</p>
+                        </div>
+                        <div class="card-body">
+                            <p>
+                                Our team will review your report and add the site to our database if it's confirmed as phishing.
+                                This helps protect other users from potential threats.
+                            </p>
+                        </div>
+                        <div class="card-footer">
+                            <button class="btn btn-primary btn-block" id="report-another-btn">Report Another Site</button>
+                        </div>
+                    </div>
+                    
+                    <div class="info-box glass-card">
+                        <h3>What happens after you report?</h3>
+                        <ol>
+                            <li>Our team reviews the reported URL</li>
+                            <li>We analyze the site using our AI detection system</li>
+                            <li>If confirmed as phishing, we add it to our blacklist database</li>
+                            <li>The site is shared with our community to prevent future attacks</li>
+                            <li>In some cases, we report the site to relevant authorities</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <i class="fas fa-shield-alt"></i>
+                    <span>PhishBusters</span>
+                </div>
+                <div class="footer-copyright">
+                    © 2025 PhishBusters. All rights reserved.
+                </div>
+                <div class="footer-links">
+                    <a href="#">Privacy Policy</a>
+                    <a href="#">Terms of Service</a>
+                    <a href="#">Contact</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Login Modal -->
+    <div class="modal" id="login-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Login to PhishBusters</h2>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="login-form">
+                    <div class="form-group">
+                        <div class="input-icon">
+                            <i class="fas fa-envelope"></i>
+                            <input type="email" placeholder="Email" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <div class="input-icon">
+                            <i class="fas fa-lock"></i>
+                            <input type="password" placeholder="Password" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-options">
+                        <div class="checkbox">
+                            <input type="checkbox" id="remember">
+                            <label for="remember">Remember me</label>
+                        </div>
+                        <a href="#" class="forgot-password">Forgot password?</a>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary btn-block" id="login-button">Login</button>
+                </form>
+                
+                <div class="auth-redirect">
+                    Don't have an account? <a href="#" id="switch-to-signup">Sign up</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Signup Modal -->
+    <div class="modal" id="signup-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Create an Account</h2>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="signup-form">
+                    <div class="form-group">
+                        <div class="input-icon">
+                            <i class="fas fa-user"></i>
+                            <input type="text" placeholder="Full Name" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <div class="input-icon">
+                            <i class="fas fa-envelope"></i>
+                            <input type="email" placeholder="Email" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <div class="input-icon">
+                            <i class="fas fa-lock"></i>
+                            <input type="password" placeholder="Password" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <div class="input-icon">
+                            <i class="fas fa-lock"></i>
+                            <input type="password" placeholder="Confirm Password" required>
+                        </div>
+                    </div>
+                    
+                    <div class="checkbox">
+                        <input type="checkbox" id="terms" required>
+                        <label for="terms">
+                            I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>
+                        </label>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary btn-block" id="signup-button">Create Account</button>
+                </form>
+                
+                <div class="auth-redirect">
+                    Already have an account? <a href="#" id="switch-to-login">Login</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+
+
+</body>
+</html>
