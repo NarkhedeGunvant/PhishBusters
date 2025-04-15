@@ -1,0 +1,121 @@
+.scanGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2.5rem;
+}
+
+.scanForm {
+  margin-bottom: 1.5rem;
+}
+
+.scanningMessage {
+  text-align: center;
+  margin: 2rem 0;
+}
+
+.resultBox {
+  padding: 1.5rem;
+  border-radius: var(--border-radius);
+  margin-top: 1rem;
+  animation: fadeIn 0.5s ease;
+}
+
+.resultBox.safe {
+  background-color: rgba(6, 214, 160, 0.1);
+  border: 1px solid rgba(6, 214, 160, 0.3);
+}
+
+.resultBox.unsafe {
+  background-color: rgba(239, 71, 111, 0.1);
+  border: 1px solid rgba(239, 71, 111, 0.3);
+}
+
+.resultHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.resultHeader i {
+  font-size: 1.5rem;
+}
+
+.resultHeader i.safe {
+  color: var(--success);
+}
+
+.resultHeader i.unsafe {
+  color: var(--danger);
+}
+
+.scoreContainer {
+  margin: 1.5rem 0;
+}
+
+.scoreLabel {
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.progressContainer {
+  height: 0.5rem;
+  background-color: var(--gray-light);
+  border-radius: 9999px;
+  overflow: hidden;
+  margin-right: 1rem;
+}
+
+.progressBar {
+  height: 100%;
+  border-radius: 9999px;
+  transition: width 1s ease;
+}
+
+.progressBar.safe {
+  background-color: var(--success);
+}
+
+.progressBar.unsafe {
+  background-color: var(--danger);
+}
+
+.progressValue {
+  font-weight: 600;
+  min-width: 3rem;
+  text-align: right;
+}
+
+.phishingSigns {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.phishingSigns li {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.phishingSigns i {
+  color: var(--success);
+  margin-top: 0.25rem;
+}
+
+.phishingSigns strong {
+  display: block;
+  margin-bottom: 0.25rem;
+}
+
+.phishingSigns p {
+  color: var(--gray);
+  font-size: 0.95rem;
+  margin: 0;
+}
+
+@media (max-width: 992px) {
+  .scanGrid {
+    grid-template-columns: 1fr;
+  }
+}
