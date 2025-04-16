@@ -2,6 +2,8 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 2.5rem;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
 .scanForm {

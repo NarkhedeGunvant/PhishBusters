@@ -4,56 +4,35 @@
   overflow: hidden;
   transition: var(--transition);
   height: 100%;
-  display: flex;
-  flex-direction: column;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  min-height: 180px;
 }
 
 .blogCard:hover {
   transform: translateY(-5px);
-  box-shadow: var(--box-shadow);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
-.imageContainer {
-  position: relative;
-  width: 100%;
-  padding-top: 60%;
-  overflow: hidden;
-}
-
-.image {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
+.cardLink {
+  display: block;
   height: 100%;
-  object-fit: cover;
-}
-
-.category {
-  position: absolute;
-  top: 1rem;
-  left: 1rem;
-  padding: 0.35rem 1rem;
-  border-radius: 2rem;
-  font-size: 0.75rem;
-  font-weight: 600;
-  color: white;
-  background: linear-gradient(135deg, var(--primary-light), var(--primary));
+  text-decoration: none;
+  color: inherit;
 }
 
 .content {
   padding: 1.5rem;
-  flex-grow: 1;
+  height: 100%;
   display: flex;
   flex-direction: column;
 }
 
 .title {
-  font-size: 1.25rem;
+  font-size: 1.1rem;
+  font-weight: 600;
   margin-bottom: 0.75rem;
-  color: var(--dark);
-  transition: var(--transition);
   line-height: 1.4;
+  color: var(--dark);
 }
 
 .title:hover {
@@ -61,9 +40,15 @@
 }
 
 .excerpt {
+  font-size: 0.9rem;
   color: var(--gray);
-  font-size: 0.95rem;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  flex-grow: 1;
 }
 
 .footer {
@@ -71,30 +56,16 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding-top: 1rem;
+  font-size: 0.8rem;
   border-top: 1px solid var(--gray-light);
+  padding-top: 0.75rem;
 }
 
-.author {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.authorImage {
-  width: 2rem;
-  height: 2rem;
-  border-radius: 50%;
-  object-fit: cover;
-}
-
-.authorName {
-  font-size: 0.875rem;
+.source {
+  color: var(--primary);
   font-weight: 500;
-  color: var(--gray-dark);
 }
 
 .date {
-  font-size: 0.875rem;
   color: var(--gray);
 }

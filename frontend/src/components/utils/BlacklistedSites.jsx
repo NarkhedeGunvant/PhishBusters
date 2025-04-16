@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import styles from './BlacklistedSites.module.css';
 
 const BLACKLISTED_SITES = [
@@ -10,25 +10,8 @@ const BLACKLISTED_SITES = [
 ];
 
 const BlacklistedSites = () => {
-  const [scrollPosition, setScrollPosition] = useState(0);
-
-  useEffect(() => {
-    const container = document.getElementById('blacklisted-sites-container');
-    if (!container) return;
-
-    const scroll = () => {
-      setScrollPosition(prev => {
-        const newPosition = prev + 1;
-        if (newPosition >= container.scrollHeight - container.clientHeight) {
-          return 0;
-        }
-        return newPosition;
-      });
-    };
-
-    const interval = setInterval(scroll, 50);
-    return () => clearInterval(interval);
-  }, []);
+  // Create duplicated list for seamless scrolling
+  const allSites = [...BLACKLISTED_SITES, ...BLACKLISTED_SITES];
 
   return (
     <div className={styles.section}>
@@ -65,35 +48,33 @@ const BlacklistedSites = () => {
             </div>
           </div>
           
-          <div 
-            className={styles.container} 
-            id="blacklisted-sites-container"
-            style={{ scrollTop: scrollPosition }}
-          >
-            {BLACKLISTED_SITES.map((site, index) => {
-              let categoryClass = styles.other;
-              if (['Financial', 'Banking'].includes(site.category)) {
-                categoryClass = styles.financial;
-              } else if (['E-commerce', 'Entertainment'].includes(site.category)) {
-                categoryClass = styles.ecommerce;
-              } else if (site.category === 'Social Media') {
-                categoryClass = styles.social;
-              }
+          <div className={styles.container}>
+            <div className={styles.scrollContainer}>
+              {allSites.map((site, index) => {
+                let categoryClass = styles.other;
+                if (['Financial', 'Banking'].includes(site.category)) {
+                  categoryClass = styles.financial;
+                } else if (['E-commerce', 'Entertainment'].includes(site.category)) {
+                  categoryClass = styles.ecommerce;
+                } else if (site.category === 'Social Media') {
+                  categoryClass = styles.social;
+                }
 
-              return (
-                <div key={index} className={styles.site}>
-                  <div>
-                    <div className={styles.siteUrl}>{site.url}</div>
-                    <div className={styles.siteDate}>
-                      Reported: {site.reportedAt}
+                return (
+                  <div key={index} className={styles.site}>
+                    <div>
+                      <div className={styles.siteUrl}>{site.url}</div>
+                      <div className={styles.siteDate}>
+                        Reported: {site.reportedAt}
+                      </div>
+                    </div>
+                    <div className={`${styles.category} ${categoryClass}`}>
+                      {site.category}
                     </div>
                   </div>
-                  <div className={`${styles.category} ${categoryClass}`}>
-                    {site.category}
-                  </div>
-                </div>
-              );
-            })}
+                );
+              })}
+            </div>
           </div>
         </div>
       </div>

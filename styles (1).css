@@ -712,6 +712,7 @@ header .container {
     height: 350px;
     overflow: hidden;
     position: relative;
+    padding: 1.5rem;
 }
 
 .blacklisted-site {
@@ -766,6 +767,8 @@ header .container {
 .blacklisted-site-category.other {
     background-color: var(--other);
 }
+
+/* Blacklisted Sites Section specific styles */
 
 /* CTA Section */
 .cta-section {
@@ -1179,6 +1182,25 @@ footer {
     font-size: 0.9rem;
 }
 
+/* Scroll Animation */
+.scroll-container {
+    animation: smoothScroll 20s linear infinite;
+    animation-play-state: running;
+}
+
+.scroll-container:hover {
+    animation-play-state: paused;
+}
+
+@keyframes smoothScroll {
+    0% {
+        transform: translateY(0);
+    }
+    100% {
+        transform: translateY(-50%);
+    }
+}
+
 /* Responsive Styles */
 @media (max-width: 992px) {
     .hero .container {
@@ -1241,6 +1263,10 @@ footer {
     
     .hero-content h1 {
         font-size: 2.5rem;
+    }
+    
+    .glass-card {
+        width: 100%;
     }
 }
 

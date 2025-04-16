@@ -154,10 +154,11 @@ function populateBlacklistedSites() {
     
     if (!container) return;
     
+    // Double the sites for seamless scrolling
+    const allSites = [...BLACKLISTED_SITES, ...BLACKLISTED_SITES];
     let html = '';
     
-    BLACKLISTED_SITES.forEach(site => {
-        // Determine category class
+    allSites.forEach(site => {
         let categoryClass = 'other';
         if (site.category === 'Financial' || site.category === 'Banking') {
             categoryClass = 'financial';
@@ -180,7 +181,7 @@ function populateBlacklistedSites() {
         `;
     });
     
-    container.innerHTML = html;
+    container.innerHTML = `<div class="scroll-container">${html}</div>`;
 }
 
 function startBlacklistedSitesScroll() {

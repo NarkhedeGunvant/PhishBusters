@@ -4,6 +4,14 @@ import styles from './Navbar.module.css';
 const Navbar = () => {
   const location = useLocation();
 
+  const handleLogin = () => {
+    window.dispatchEvent(new CustomEvent('toggle-login'));
+  };
+
+  const handleSignup = () => {
+    window.dispatchEvent(new CustomEvent('toggle-signup'));
+  };
+
   return (
     <header className={styles.header}>
       <div className={`container ${styles.container}`}>
@@ -21,8 +29,8 @@ const Navbar = () => {
           </ul>
         </nav>
         <div className={styles.authButtons}>
-          <button className="btn btn-outline" id="login-btn">Login</button>
-          <button className="btn btn-primary" id="signup-btn">Sign Up</button>
+          <button className="btn btn-outline" id="login-btn" onClick={handleLogin}>Login</button>
+          <button className="btn btn-primary" id="signup-btn" onClick={handleSignup}>Sign Up</button>
         </div>
         <div className={styles.mobileMenuBtn}>
           <i className="fas fa-bars"></i>

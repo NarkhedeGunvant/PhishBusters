@@ -51,6 +51,26 @@
   height: 350px;
   overflow: hidden;
   padding: 1.5rem;
+  margin: 0 auto;
+  position: relative;
+}
+
+.scrollContainer {
+  animation: smoothScroll 20s linear infinite;
+  animation-play-state: running;
+}
+
+.scrollContainer:hover {
+  animation-play-state: paused;
+}
+
+@keyframes smoothScroll {
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(-50%);
+  }
 }
 
 .site {
