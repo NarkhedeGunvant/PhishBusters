@@ -16,18 +16,26 @@ import ScanURL from './pages/ScanURL';
 import ScanEmail from './pages/ScanEmail';
 import Blog from './pages/Blog';
 import Report from './pages/Report';
+import { useAuth } from './context/AuthContext';
+import { Toaster } from 'react-hot-toast';
+import './App.css';
 
 function App() {
+  const { user } = useAuth();
+
   return (
-    <Routes>
-      <Route path="/" element={<RootLayout />}>
-        <Route index element={<Home />} />
-        <Route path="scan" element={<ScanURL />} />
-        <Route path="email-scan" element={<ScanEmail />} />
-        <Route path="blog" element={<Blog />} />
-        <Route path="report" element={<Report />} />
-      </Route>
-    </Routes>
+    <>
+      <Toaster position="bottom-right" />
+      <Routes>
+        <Route path="/" element={<RootLayout />}>
+          <Route index element={<Home />} />
+          <Route path="/blog" element={<Blog />} />
+          <Route path="/scan-url" element={<ScanURL />} />
+          <Route path="/scan-email" element={<ScanEmail />} />
+          <Route path="/report" element={<Report />} />
+        </Route>
+      </Routes>
+    </>
   );
 }
 

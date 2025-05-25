@@ -1,17 +1,49 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { collection, query, orderBy, limit, onSnapshot } from 'firebase/firestore';
+import { db } from '../../firebase/config';
 import styles from './BlacklistedSites.module.css';
 
-const BLACKLISTED_SITES = [
-  { url: "fake-paypa1.com", reportedAt: "2025-03-12", category: "Financial" },
-  { url: "amaz0n-security-alert.net", reportedAt: "2025-03-11", category: "E-commerce" },
-  { url: "g00gle-verify.com", reportedAt: "2025-03-10", category: "Tech" },
-  { url: "bank0famerica-secure.com", reportedAt: "2025-03-09", category: "Banking" },
-  { url: "netfl1x-account-update.com", reportedAt: "2025-03-08", category: "Entertainment" }
-];
-
 const BlacklistedSites = () => {
+  const [sites, setSites] = useState([]);
+  
+  useEffect(() => {
+    const reportsQuery = query(
+      collection(db, 'reports'),
+      orderBy('createdAt', 'desc'),
+      limit(10)
+    );
+
+    const unsubscribe = onSnapshot(reportsQuery, (snapshot) => {
+      const newSites = snapshot.docs.map(doc => {
+        const data = doc.data();
+        const timestamp = data.createdAt;
+        let formattedDate;
+        
+        if (timestamp) {
+          // Convert Firestore timestamp to JavaScript Date and format it
+          const date = timestamp.toDate();
+          formattedDate = date.toISOString().split('T')[0];
+        } else {
+          formattedDate = new Date().toISOString().split('T')[0];
+        }
+
+        return {
+          id: doc.id,
+          url: data.url || '',
+          reportedAt: formattedDate,
+          category: data.category || data.targetBrand || 'Other'
+        };
+      });
+      setSites(newSites);
+    }, (error) => {
+      console.error("Error fetching reports:", error);
+    });
+
+    return () => unsubscribe();
+  }, []);
+
   // Create duplicated list for seamless scrolling
-  const allSites = [...BLACKLISTED_SITES, ...BLACKLISTED_SITES];
+  const allSites = [...sites, ...sites];
 
   return (
     <div className={styles.section}>

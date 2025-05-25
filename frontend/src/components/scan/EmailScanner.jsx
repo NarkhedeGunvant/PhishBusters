@@ -1,42 +1,68 @@
 import { useState } from 'react';
 import styles from './EmailScanner.module.css';
 
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+
 const EmailScanner = () => {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [scanResult, setScanResult] = useState(null);
 
-  const analyzeEmailContent = (content) => {
-    const indicators = [];
-    const contentLower = content.toLowerCase();
-    
-    // Check for urgent language
-    if (contentLower.includes('urgent') || 
-        contentLower.includes('immediate action') || 
-        contentLower.includes('act now')) {
-      indicators.push('Contains urgent language or time pressure tactics');
+  const formatAnalysis = (analysis) => {
+    const sections = {
+      riskScore: null,
+      specificConcerns: [],
+      concernsNotFound: [],
+      overallAssessment: ''
+    };
+
+    // Extract risk score
+    const scoreMatch = analysis.match(/Risk Score: (\d+)\/10/);
+    if (scoreMatch) {
+      sections.riskScore = parseInt(scoreMatch[1]);
     }
-    
-    // Check for suspicious links
-    if (contentLower.includes('click here') || 
-        contentLower.includes('verify your account')) {
-      indicators.push('Contains suspicious call-to-action links');
-    }
-    
-    // Check for sensitive information requests
-    if (contentLower.includes('password') || 
-        contentLower.includes('credit card') || 
-        contentLower.includes('ssn')) {
-      indicators.push('Requests sensitive personal information');
-    }
-    
-    // Check for generic greeting
-    if (contentLower.includes('dear customer') || 
-        contentLower.includes('dear user')) {
-      indicators.push('Uses generic greeting instead of your name');
-    }
-    
-    return indicators;
+
+    // Split the text into sections
+    const lines = analysis.split('\n');
+    let currentSection = '';
+
+    lines.forEach(line => {
+      const trimmedLine = line.trim();
+      
+      if (trimmedLine.startsWith('**Specific Concerns Found:**')) {
+        currentSection = 'concerns';
+      } else if (trimmedLine.startsWith('**Concerns NOT found:**')) {
+        currentSection = 'notFound';
+      } else if (trimmedLine.startsWith('**Overall Assessment:**')) {
+        currentSection = 'overall';
+      } else if (trimmedLine) {
+        if (currentSection === 'concerns' && trimmedLine.match(/^\d+\./)) {
+          sections.specificConcerns.push(trimmedLine.replace(/^\d+\.\s*/, ''));
+        } else if (currentSection === 'notFound' && trimmedLine.startsWith('*')) {
+          sections.concernsNotFound.push(trimmedLine.replace(/^\*\s*/, ''));
+        } else if (currentSection === 'overall') {
+          sections.overallAssessment += trimmedLine + ' ';
+        }
+      }
+    });
+
+    return sections;
   };
+
+  const renderAnalysisSection = (title, items, icon) => (
+    <div className={styles.analysisSection}>
+      <h4>
+        <i className={`fas ${icon}`}></i> {title}
+      </h4>
+      <ul>
+        {items.map((item, index) => (
+          <li key={index}>
+            <i className="fas fa-exclamation-circle"></i>
+            {item}
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
 
   const handleEmailScanSubmit = async (e) => {
     e.preventDefault();
@@ -48,22 +74,32 @@ const EmailScanner = () => {
     setScanResult(null);
     
     try {
-      // Simulate API delay
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      const indicators = analyzeEmailContent(emailContent);
-      const score = 100 - (indicators.length * 15); // Each indicator reduces score
-      const isSafe = score > 70;
+      const response = await fetch(`${BACKEND_URL}/api/scan/email`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ emailContent })
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to analyze email');
+      }
+
+      const data = await response.json();
+      const formattedAnalysis = formatAnalysis(data.analysis);
       
       setScanResult({
-        score,
-        isSafe,
-        indicators,
-        message: isSafe 
-          ? 'This email appears to be legitimate with low risk indicators.'
-          : 'This email shows multiple signs of being a phishing attempt. Proceed with caution.'
+        score: data.confidence,
+        isSafe: !data.isMalicious,
+        riskScore: formattedAnalysis.riskScore,
+        specificConcerns: formattedAnalysis.specificConcerns,
+        concernsNotFound: formattedAnalysis.concernsNotFound,
+        overallAssessment: formattedAnalysis.overallAssessment,
+        analysis: data.analysis
       });
     } catch (error) {
+      console.error('Error analyzing email:', error);
       setScanResult({
         error: true,
         message: 'An error occurred while analyzing the email. Please try again.'
@@ -123,33 +159,34 @@ const EmailScanner = () => {
                     <i className={`fas ${scanResult.isSafe ? 'fa-check-circle' : 'fa-exclamation-triangle'} ${scanResult.isSafe ? styles.safe : styles.unsafe}`}></i>
                     <h4>{scanResult.isSafe ? 'Low Risk Email' : 'Potential Phishing Email'}</h4>
                   </div>
-                  
+
                   <div className={styles.scoreContainer}>
-                    <div className={styles.scoreLabel}>Safety Score</div>
+                    <div className={styles.scoreLabel}>Risk Score</div>
                     <div style={{ display: 'flex', alignItems: 'center' }}>
                       <div className={styles.progressContainer} style={{ flexGrow: 1 }}>
                         <div 
-                          className={`${styles.progressBar} ${scanResult.isSafe ? styles.safe : styles.unsafe}`}
-                          style={{ width: `${scanResult.score}%` }}
+                          className={`${styles.progressBar} ${scanResult.riskScore <= 5 ? styles.safe : styles.unsafe}`}
+                          style={{ width: `${(scanResult.riskScore / 10) * 100}%` }}
                         />
                       </div>
-                      <span className={styles.progressValue}>{Math.round(scanResult.score)}%</span>
+                      <span className={styles.progressValue}>{scanResult.riskScore}/10</span>
                     </div>
                   </div>
-                  
-                  <p>{scanResult.message}</p>
-                  
-                  {scanResult.indicators.length > 0 && (
-                    <div className={styles.indicators}>
-                      <strong>Detected Indicators:</strong>
-                      <ul>
-                        {scanResult.indicators.map((indicator, index) => (
-                          <li key={index}>
-                            <i className="fas fa-exclamation-circle"></i>
-                            {indicator}
-                          </li>
-                        ))}
-                      </ul>
+
+                  {scanResult.specificConcerns.length > 0 && (
+                    renderAnalysisSection('Specific Concerns Found', scanResult.specificConcerns, 'fa-exclamation-triangle')
+                  )}
+
+                  {scanResult.concernsNotFound.length > 0 && (
+                    renderAnalysisSection('Concerns Not Found', scanResult.concernsNotFound, 'fa-check')
+                  )}
+
+                  {scanResult.overallAssessment && (
+                    <div className={styles.analysisSection}>
+                      <h4>
+                        <i className="fas fa-info-circle"></i> Overall Assessment
+                      </h4>
+                      <p>{scanResult.overallAssessment}</p>
                     </div>
                   )}
                 </div>

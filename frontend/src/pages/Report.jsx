@@ -1,5 +1,9 @@
 import { useState } from 'react';
 import styles from './Report.module.css';
+import { useAuth } from '../context/AuthContext';
+import { db } from '../firebase/config';
+import { collection, addDoc, serverTimestamp, writeBatch } from 'firebase/firestore';
+import toast from 'react-hot-toast';
 
 const Report = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -13,6 +17,8 @@ const Report = () => {
     dateDiscovered: new Date().toISOString().split('T')[0]
   });
 
+  const { user } = useAuth();
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({
@@ -25,9 +31,40 @@ const Report = () => {
     e.preventDefault();
     setIsSubmitting(true);
 
+    if(!user) {
+      toast.error('You must be logged in to submit a report.');
+      setIsSubmitting(false);
+      return;
+    }
+
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      // Create a batch write operation
+      const batch = writeBatch(db);
+
+      // Prepare report data
+      const reportData = {
+        ...formData,
+        reportedBy: {
+          uid: user.uid,
+          email: user.email,
+          displayName: user.displayName || null
+        },
+        status: 'pending',
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp(),
+        retryCount: 0,
+        lastError: null
+      };
+
+      // Try to write to reports collection
+      const reportsRef = collection(db, 'reports');
+      const docRef = await addDoc(reportsRef, reportData);
+
+      if (!docRef.id) {
+        throw new Error('Failed to create report document');
+      }
+
+      toast.success('Report submitted successfully!');
       setShowSuccess(true);
       setFormData({
         url: '',
@@ -39,6 +76,20 @@ const Report = () => {
       });
     } catch (error) {
       console.error('Error submitting report:', error);
+      
+      let errorMessage = 'Failed to submit report. ';
+      
+      if (error.code === 'permission-denied') {
+        errorMessage += 'You do not have permission to submit reports.';
+      } else if (error.code === 'unavailable') {
+        errorMessage += 'The service is temporarily unavailable. Please try again later.';
+      } else if (error.code === 'failed-precondition') {
+        errorMessage += 'Please check your connection and try again.';
+      } else {
+        errorMessage += 'Please try again later.';
+      }
+      
+      toast.error(errorMessage);
     } finally {
       setIsSubmitting(false);
     }

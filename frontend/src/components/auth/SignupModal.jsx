@@ -1,9 +1,21 @@
 import { useState, useEffect } from 'react';
+import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
+import { doc, setDoc, serverTimestamp } from 'firebase/firestore';
+import { auth } from '../../firebase/config';
+import toast from 'react-hot-toast';
 import styles from './Modal.module.css';
 
 const SignupModal = () => {
   const [isVisible, setIsVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [formData, setFormData] = useState({
+    fullName: '',
+    email: '',
+    password: '',
+    confirmPassword: '',
+    terms: false
+  });
 
   useEffect(() => {
     const toggleSignup = () => setIsVisible(prev => !prev);
@@ -11,16 +23,75 @@ const SignupModal = () => {
     return () => window.removeEventListener('toggle-signup', toggleSignup);
   }, []);
 
+  const handleInputChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: type === 'checkbox' ? checked : value
+    }));
+    setError('');
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
+    setError('');
+
+    if (formData.password !== formData.confirmPassword) {
+      setError('Passwords do not match');
+      toast.error('Passwords do not match');
+      setIsLoading(false);
+      return;
+    }
     
     try {
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      // Create user in Firebase Auth
+      const userCredential = await createUserWithEmailAndPassword(
+        auth,
+        formData.email,
+        formData.password
+      );
+
+      // Update the user's display name
+      await updateProfile(userCredential.user, {
+        displayName: formData.fullName
+      });
+
+      // Prepare user data
+      const userData = {
+        fullName: formData.fullName,
+        email: formData.email,
+        createdAt: serverTimestamp(),
+        lastLoginAt: serverTimestamp()
+      };
+
+      toast.success('Account created successfully!');
       setIsVisible(false);
-      // In a real app, you would handle the account creation here
+      
+      // Reset form
+      setFormData({
+        fullName: '',
+        email: '',
+        password: '',
+        confirmPassword: '',
+        terms: false
+      });
+      setIsVisible(false);
     } catch (error) {
       console.error('Signup failed:', error);
+      
+      let errorMessage = 'An error occurred during signup. Please try again.';
+      
+      if (error.code === 'auth/email-already-in-use') {
+        errorMessage = 'This email is already registered.';
+      } else if (error.code === 'auth/invalid-email') {
+        errorMessage = 'Please enter a valid email address.';
+      } else if (error.code === 'auth/weak-password') {
+        errorMessage = 'Password should be at least 6 characters.';
+      }
+      
+      setError(errorMessage);
+      toast.error(errorMessage);
     } finally {
       setIsLoading(false);
     }
@@ -41,38 +112,74 @@ const SignupModal = () => {
           </button>
         </div>
         <div className={styles.modalBody}>
-          <form id="signup-form" onSubmit={handleSubmit}>
+          {error && <div className={styles.error}>{error}</div>}
+          <form onSubmit={handleSubmit}>
             <div className={styles.formGroup}>
               <div className={styles.inputIcon}>
                 <i className="fas fa-user"></i>
-                <input type="text" placeholder="Full Name" required />
+                <input
+                  type="text"
+                  name="fullName"
+                  value={formData.fullName}
+                  onChange={handleInputChange}
+                  placeholder="Full Name"
+                  required
+                />
               </div>
             </div>
             
             <div className={styles.formGroup}>
               <div className={styles.inputIcon}>
                 <i className="fas fa-envelope"></i>
-                <input type="email" placeholder="Email" required />
+                <input
+                  type="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleInputChange}
+                  placeholder="Email"
+                  required
+                />
               </div>
             </div>
             
             <div className={styles.formGroup}>
               <div className={styles.inputIcon}>
                 <i className="fas fa-lock"></i>
-                <input type="password" placeholder="Password" required />
+                <input
+                  type="password"
+                  name="password"
+                  value={formData.password}
+                  onChange={handleInputChange}
+                  placeholder="Password"
+                  required
+                />
               </div>
             </div>
             
             <div className={styles.formGroup}>
               <div className={styles.inputIcon}>
                 <i className="fas fa-lock"></i>
-                <input type="password" placeholder="Confirm Password" required />
+                <input
+                  type="password"
+                  name="confirmPassword"
+                  value={formData.confirmPassword}
+                  onChange={handleInputChange}
+                  placeholder="Confirm Password"
+                  required
+                />
               </div>
             </div>
             
             <div className={styles.formGroup}>
               <div className={styles.checkbox}>
-                <input type="checkbox" id="terms" required />
+                <input
+                  type="checkbox"
+                  id="terms"
+                  name="terms"
+                  checked={formData.terms}
+                  onChange={handleInputChange}
+                  required
+                />
                 <label htmlFor="terms">
                   I agree to the <a href="#">Terms of Service</a> and{' '}
                   <a href="#">Privacy Policy</a>

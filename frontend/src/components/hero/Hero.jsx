@@ -20,13 +20,13 @@ const Hero = () => {
             <div className={styles.heroButtons}>
               <button 
                 className="btn btn-primary btn-lg" 
-                onClick={() => handleNavigate('scan')}
+                onClick={() => handleNavigate('scan-url')}
               >
                 Scan URL <i className="fas fa-arrow-right"></i>
               </button>
               <button 
                 className="btn btn-secondary btn-lg" 
-                onClick={() => handleNavigate('email-scan')}
+                onClick={() => handleNavigate('scan-email')}
               >
                 Analyze Email <i className="fas fa-envelope"></i>
               </button>
